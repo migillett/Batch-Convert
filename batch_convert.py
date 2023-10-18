@@ -1,4 +1,5 @@
-from os import path, listdir, remove, replace
+from os import path, listdir, remove
+from shutil import move
 import subprocess
 import logging
 from time import sleep
@@ -31,7 +32,6 @@ def main(check_interval=600):
     export_directory = '/app/export'
 
     while True:
-
         media_to_convert = []
 
         report = f'Found the following MKV files found in {source_directory}:'
@@ -71,18 +71,18 @@ def main(check_interval=600):
                     remove(export_path)
                 continue
 
-            copy_to = path.join(export_directory,
+            move_to = path.join(export_directory,
                                 path.basename(export_path))
-            logger.info(f'Moving completed export {export_path} to {copy_to}.')
+            logger.info(f'Moving completed export {export_path} to {move_to}.')
             try:
-                replace(export_path, copy_to)
+                move(export_path, move_to)
             except PermissionError:
-                logger.error(f'Unable to copy {export_path} to {copy_to}')
+                logger.error(f'Unable to move {export_path} to {move_to}')
                 exit(1)
 
             logger.info('File move complete.')
 
-            logger.info(f'Attempting to delete source MKV file {file}')
+            logger.info(f'Attempting to delete source MKV file: {file}')
             try:
                 remove(file)
                 logger.info(f'Deleted file {file} successfully.')
@@ -91,7 +91,7 @@ def main(check_interval=600):
                 continue
 
             logger.info(
-                f'Conversion complete for MKV file {path.basename(copy_to)} | Total process time: {datetime.now() - t1}')
+                f'Conversion complete for MKV file {path.basename(move_to)} | Total process time: {datetime.now() - t1}')
 
 
 if __name__ == "__main__":
