@@ -1,0 +1,12 @@
+version: "3"
+services:
+  batch_convert:
+    container_name: batch_convert
+    build: .
+    environment:
+      - PUID=1001 # jellyfin
+      - PGID=1001 # jellyfin
+    volumes:
+      - /mnt/raid1/convert:/app/source:rw
+      - /mnt/raid1/jellyfin/media/converted:/app/export:rw
+    
