@@ -101,13 +101,10 @@ def move_export(file_path: str, move_to_directory: str) -> bool:
     except Exception as e:
         logger.error(f'Unable to move {file_path} to {new_path}: {e}')
         return False
-
-    logger.info('File move complete.')
     return True
 
 
 def delete_source_file(source_file: str) -> None:
-    logger.info(f'Attempting to delete source file: {source_file}')
     try:
         remove(source_file)
         logger.info(f'Deleted file {source_file} successfully.')
@@ -153,8 +150,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # schedule.every().day.at("23:00", "America/New_York").do(main)
+    schedule.every().day.at("23:00", "America/New_York").do(main)
     while True:
         main()
-        # schedule.run_pending()
+        schedule.run_pending()
         sleep(1)
