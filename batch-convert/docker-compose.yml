@@ -8,7 +8,8 @@ services:
       - PGID=1000 # use whatever group you need
       - SOURCE_FILE_CLEANUP='true'
       - FILETYPES="mkv,mov,mp4" # must be a string of file types split by commas and no spaces
+      - RUN_EVERY="10" # how often to run the scan in minutes
     volumes:
-      - /path/to/source/directory:/app/source:rw
-      - /path/to/destination/directory:/app/export:rw
+      - /path/to/source/directory:/app/source:rw # the source files you want to convert
+      - /path/to/destination/directory:/app/export:rw # where you want to save the ocnverted files to
     

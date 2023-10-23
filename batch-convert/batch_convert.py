@@ -150,8 +150,14 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    schedule.every().day.at("23:00", "America/New_York").do(main)
+    try:
+        n = int(environ.get('EVERY_N_MINUTES', 10))
+    except ValueError:
+        logger.error(
+            f'unable to convert {environ.get("EVERY_N_MINUTES")} to an integer')
+        exit(1)
+
+    schedule.every(n).minutes.do(main())
     while True:
-        main()
         schedule.run_pending()
         sleep(1)

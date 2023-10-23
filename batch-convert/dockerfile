@@ -15,5 +15,6 @@ RUN apt-get install ffmpeg -y
 
 # Copy over local files to docker image
 COPY . .
+RUN pip3 install -r requirements.txt
 
 CMD [ "python3", "batch_convert.py" ]
