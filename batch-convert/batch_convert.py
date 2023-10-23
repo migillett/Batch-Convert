@@ -10,8 +10,6 @@ import schedule
 source_directory = '/app/source'
 export_directory = '/app/export'
 
-watch_file_types = environ.get('FILETYPES', None)
-
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
@@ -33,6 +31,7 @@ logger.addHandler(console_handler)
 
 
 def extract_watch_file_types() -> list[str]:
+    watch_file_types = environ.get('FILETYPES', None)
     if watch_file_types is None:
         logging.error(
             'Unable to import environment variable FILETYPES. Exiting...')
@@ -157,7 +156,7 @@ if __name__ == "__main__":
         exit(1)
 
     logger.info(
-        f'Program params:\n  Scan interval: every {n} minutes\n  File formats: {watch_file_types}')
+        f'Program params:\n  Scan interval: every {n} minutes\n  File formats: {environ.get("FILETYPES")}')
 
     schedule.every(n).minutes.do(main)
     while True:
