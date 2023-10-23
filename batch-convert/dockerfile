@@ -10,7 +10,6 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-RUN apt-get update
 RUN apt-get install ffmpeg -y
 
 # Copy over local files to docker image

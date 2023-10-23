@@ -157,7 +157,7 @@ if __name__ == "__main__":
             f'unable to convert {environ.get("EVERY_N_MINUTES")} to an integer')
         exit(1)
 
-    schedule.every(n).minutes.do(main())
+    schedule.every(n).minutes.do(main)
     while True:
         schedule.run_pending()
         sleep(1)
