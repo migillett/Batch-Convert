@@ -21,3 +21,8 @@ services:
       - /path/to/destination/directory:/app/export:rw # where you want to save the ocnverted files to
     
 ```
+
+Then run `docker-compose up -d --force-recreate --build` to pull the base image, build, and run the container.
+
+## Future Updates
+I would like to add in a feature that scans the exported file and compares it using PSNR and/or SSIM analsis to make sure the source and export is the same.
