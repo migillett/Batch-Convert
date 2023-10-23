@@ -113,8 +113,6 @@ def delete_source_file(source_file: str) -> None:
 
 
 def main() -> None:
-    logger.info('===== Starting batch_convert.py =====')
-
     enable_source_cleanup = environ.get(
         'SOURCE_FILE_CLEANUP', 'false').lower() == 'true'
 
@@ -150,6 +148,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    logger.info('===== Starting batch_convert.py =====')
+
     try:
         n = int(environ.get('EVERY_N_MINUTES', 10))
     except ValueError:
