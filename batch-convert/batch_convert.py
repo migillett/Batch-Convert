@@ -31,9 +31,10 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 
-def extract_watch_file_types() -> list[str]:
-    watch_file_types = environ.get('FILETYPES', None)
+watch_file_types = environ.get('FILETYPES', None)
 
+
+def extract_watch_file_types() -> list[str]:
     if watch_file_types is None:
         logging.error(
             'Unable to import environment variable FILETYPES. Exiting...')
@@ -156,6 +157,9 @@ if __name__ == "__main__":
         logger.error(
             f'unable to convert {environ.get("EVERY_N_MINUTES")} to an integer')
         exit(1)
+
+    logger.info(
+        f'Program params:\n  Scan interval: every {n} minutes\n  File formats: {watch_file_types}')
 
     schedule.every(n).minutes.do(main)
     while True:
