@@ -10,6 +10,7 @@ import schedule
 source_directory = '/app/source'
 export_directory = '/app/export'
 
+watch_file_types = environ.get('FILETYPES', None)
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -29,9 +30,6 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)  # Set the log level for the console
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
-
-
-watch_file_types = environ.get('FILETYPES', None)
 
 
 def extract_watch_file_types() -> list[str]:
