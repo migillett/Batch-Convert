@@ -20,7 +20,7 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 # Create a file handler to log to a file
 file_handler = logging.FileHandler(
-    path.join(export_directory, 'convert_jobs.log'))
+    path.join(source_directory, 'convert_jobs.log'))
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
