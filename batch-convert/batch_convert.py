@@ -139,10 +139,7 @@ class BatchConverter:
 
         file_types = self.extract_watch_file_types()
 
-        media_to_convert = self.generate_convert_list(
-            source_directory=self.source_directory,
-            file_types=file_types
-        )
+        media_to_convert = self.generate_convert_list()
 
         if len(media_to_convert) == 0:
             self.logger.info(
