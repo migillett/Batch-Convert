@@ -76,7 +76,7 @@ class BatchConverter:
             f'Searching for files in {self.source_directory} with extensions {self.watch_file_types}...')
         files = listdir(self.source_directory)
         for file in files:
-            if path.splittext(file)[-1] in self.watch_file_types:
+            if path.splitext(file)[-1] in self.watch_file_types:
                 self.media_to_convert.append(
                     path.join(self.source_directory, file))
                 report += f'\n  - {file}'
