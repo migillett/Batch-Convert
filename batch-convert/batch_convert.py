@@ -70,7 +70,7 @@ class BatchConverter:
             exit(1)
 
         # reset media conversion list to empty
-        self.media_to_convert = []
+        convert_list = []
 
         report = f'Found the following MKV files found in {self.source_directory}:'
 
@@ -78,15 +78,16 @@ class BatchConverter:
             f'Searching for files in {self.source_directory} with extensions {self.watch_file_types}...')
         files = listdir(self.source_directory)
         for file in files:
-            if path.splitext(file)[-1] in self.watch_file_types:
-                self.media_to_convert.append(
+            print(file)
+            if path.splitext(file)[-1].replace('.', '') in self.watch_file_types:
+                convert_list.append(
                     path.join(self.source_directory, file))
                 report += f'\n  - {file}'
 
-        if len(self.media_to_convert) > 0:
+        if len(convert_list) > 0:
             self.logger.info(report)
 
-        return self.media_to_convert
+        return convert_list
 
     def convert_file(self, source_path: str, destination_path: str) -> bool:
         ffmpeg_cmd = f'ffmpeg -y -i "{source_path}" -c:v libx264 -c:a aac -strict experimental -ac 2 -crf 20 "{destination_path}"'
@@ -144,7 +145,6 @@ class BatchConverter:
         file_types = self.extract_watch_file_types()
 
         media_to_convert = self.generate_convert_list()
-
         if len(media_to_convert) == 0:
             self.logger.info(
                 f'No files with extensions {file_types} detected in {self.source_directory}.')
