@@ -177,4 +177,4 @@ class BatchConverter:
 
 if __name__ == "__main__":
     batchconvert = BatchConverter()
-    batchconvert.run_on_schedule()
+    batchconvert.run()
