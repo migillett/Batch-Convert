@@ -12,4 +12,9 @@ services:
     volumes:
       - /path/to/source/directory:/app/source:rw # the source files you want to convert
       - /path/to/destination/directory:/app/export:rw # where you want to save the ocnverted files to
-    
+    # OPTIONAL - set resource limits on the transcoding
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '3'
+    #       memory: 8G

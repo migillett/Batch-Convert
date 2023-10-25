@@ -44,7 +44,6 @@ class BatchConverter:
                 f'unable to convert {environ.get("RUN_EVERY")} to an integer')
             exit(1)
 
-        self.watch_file_types = []
         self.media_to_convert = []
 
     def extract_watch_file_types(self) -> list[str]:
@@ -53,18 +52,12 @@ class BatchConverter:
             logging.error(
                 'Unable to import environment variable FILETYPES. Exiting...')
             exit(1)
+        return [w.lower() for w in file_types.split(',')]
 
-        self.watch_file_types = [w.lower() for w in file_types.split(',')]
-        if len(self.watch_file_types) == 0:
-            logging.error('file type whitelist has no items. Exiting...')
-            exit(1)
-
-        return self.watch_file_types
-
-    def generate_convert_list(self) -> list[str]:
+    def generate_convert_list(self, watch_file_types: list[str]) -> list[str]:
         # returns a list of media files that match file types
 
-        if len(self.watch_file_types) == 0:
+        if len(watch_file_types) == 0:
             logging.error(
                 'File type list has a length of 0. Unable to find any files with matching extensions.')
             exit(1)
@@ -75,11 +68,11 @@ class BatchConverter:
         report = f'Found the following MKV files found in {self.source_directory}:'
 
         logging.info(
-            f'Searching for files in {self.source_directory} with extensions {self.watch_file_types}...')
+            f'Searching for files in {self.source_directory} with extensions {watch_file_types}...')
         files = listdir(self.source_directory)
         for file in files:
             print(file)
-            if path.splitext(file)[-1].replace('.', '') in self.watch_file_types:
+            if path.splitext(file)[-1].replace('.', '') in watch_file_types:
                 convert_list.append(
                     path.join(self.source_directory, file))
                 report += f'\n  - {file}'
@@ -143,10 +136,13 @@ class BatchConverter:
             'SOURCE_FILE_CLEANUP', 'false').lower() == 'true'
 
         file_types = self.extract_watch_file_types()
+        if len(file_types) == 0:
+            logging.error('file type watch list has no items. Exiting...')
+            exit(1)
 
-        media_to_convert = self.generate_convert_list()
+        media_to_convert = self.generate_convert_list(file_types)
         if len(media_to_convert) == 0:
-            self.logger.info(
+            self.logger.error(
                 f'No files with extensions {file_types} detected in {self.source_directory}.')
             return
 
