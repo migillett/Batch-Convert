@@ -36,12 +36,12 @@ class BatchConverter:
         self.logger.info('===== Starting batch_convert.py =====')
 
         try:
-            self.every_n_minutes = int(environ.get('EVERY_N_MINUTES', 10))
+            self.every_n_minutes = int(environ.get('RUN_EVERY', 10))
             self.logger.info(
                 f'Scanning source directory every {self.every_n_minutes} minutes')
         except ValueError:
             self.logger.error(
-                f'unable to convert {environ.get("EVERY_N_MINUTES")} to an integer')
+                f'unable to convert {environ.get("RUN_EVERY")} to an integer')
             exit(1)
 
         self.watch_file_types = []
