@@ -2,7 +2,9 @@
  A Docker container using [Python3](https://www.python.org/downloads/) and [ffmpeg](https://ffmpeg.org/download.html) to create a watch folder to convert media files to M4V. This script uses the python library [schedule](https://schedule.readthedocs.io/en/stable/index.html) to scan a folder every x minutes for new files.
 
 ## Running Locally
-Make sure you install [Docker Compose](https://docs.docker.com/compose/install/) in order to run this container. Before starting the container, make sure to modify the `docker-compose.yml` file to meet your requirements. Here's an example:
+First, pull down this GitHub repository using `git clone https://github.com/migillett/Batch-Convert.git` and move into the directory.
+
+Make sure you install [Docker Compose](https://docs.docker.com/compose/install/) to run this container. You'll want tomodify the `docker-compose.yml` file to meet your requirements. Here's an example:
 
 ```
 version: "3"
@@ -18,7 +20,13 @@ services:
       - RUN_EVERY="10" # how often to run the scan in minutes
     volumes:
       - /path/to/source/directory:/app/source:rw # the source files you want to convert
-      - /path/to/destination/directory:/app/export:rw # where you want to save the ocnverted files to
+      - /path/to/destination/directory:/app/export:rw # where you want to save the converted files to
+    # OPTIONAL - set resource limits on the transcoding to give your computer some breathing room
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '3'
+    #       memory: 8G
     
 ```
 
