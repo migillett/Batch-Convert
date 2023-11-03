@@ -15,6 +15,8 @@ class BatchConverter:
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
 
+        self.export_format = environ.get('EXPORT_FORMAT', 'mkv')
+
         # Create a formatter to define the log message format
         formatter = logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s')
@@ -148,7 +150,7 @@ class BatchConverter:
 
         for file in media_to_convert:
             file_name = path.splitext(path.basename(file))[0]
-            export_path = f"./{file_name}.m4v"
+            export_path = f"./{file_name}.{self.export_format}"
 
             if not self.convert_file(file, export_path):
                 continue
