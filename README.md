@@ -15,18 +15,19 @@ services:
     environment:
       - PUID=1000 # use whatever user you need
       - PGID=1000 # use whatever group you need
-      - SOURCE_FILE_CLEANUP='true'
-      - FILETYPES="mkv,mov,mp4" # must be a string of file types split by commas and no spaces
-      - RUN_EVERY="10" # how often to run the scan in minutes
+      - SOURCE_FILE_CLEANUP=true
+      - FILETYPES=mkv,mov,mp4 # must be a string of file types split by commas and no spaces
+      - EXPORT_FORMAT=m4v
+      - RUN_EVERY=10 # how often to run the scan in minutes
     volumes:
       - /path/to/source/directory:/app/source:rw # the source files you want to convert
       - /path/to/destination/directory:/app/export:rw # where you want to save the converted files to
-    # OPTIONAL - set resource limits on the transcoding to give your computer some breathing room
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '3'
-    #       memory: 8G
+    # OPTIONAL - set resource limits on the transcoding
+    deploy:
+      resources:
+        limits:
+          cpus: '3'
+          memory: 8G
     
 ```
 
