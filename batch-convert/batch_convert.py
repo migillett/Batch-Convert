@@ -73,8 +73,7 @@ class BatchConverter:
             f'Searching for files in {self.source_directory} with extensions {watch_file_types}...')
         files = listdir(self.source_directory)
         for file in files:
-            print(file)
-            if path.splitext(file)[-1].replace('.', '') in watch_file_types:
+            if path.splitext(file)[-1].replace('.', '') in watch_file_types and not file.startswith('.'):
                 convert_list.append(
                     path.join(self.source_directory, file))
                 report += f'\n  - {file}'
