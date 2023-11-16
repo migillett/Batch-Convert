@@ -69,8 +69,6 @@ class BatchConverter:
 
         report = f'Found the following MKV files found in {self.source_directory}:'
 
-        logging.info(
-            f'Searching for files in {self.source_directory} with extensions {watch_file_types}...')
         files = listdir(self.source_directory)
         for file in files:
             if path.splitext(file)[-1].replace('.', '') in watch_file_types and not file.startswith('.'):
@@ -143,8 +141,6 @@ class BatchConverter:
 
         media_to_convert = self.generate_convert_list(file_types)
         if len(media_to_convert) == 0:
-            self.logger.info(
-                f'No files with extensions {file_types} detected in {self.source_directory}.')
             return
 
         for file in media_to_convert:
