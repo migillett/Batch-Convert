@@ -5,6 +5,9 @@ import logging
 from time import sleep
 from datetime import datetime
 import schedule
+from dataclasses import fields
+
+from utils.data_structures import InterlaceDetect
 
 
 class BatchConverter:
@@ -81,8 +84,45 @@ class BatchConverter:
 
         return convert_list
 
+    def check_interlaced(self, source_path: str, analyze_frames: int = 360) -> InterlaceDetect | None:
+        response = None
+
+        self.logger.info(f'Determining if file is interlaced: {source_path}')
+
+        ffmpeg_cmd = f'ffmpeg -filter:v idet -frames:v {analyze_frames} -an -f rawvideo -y /dev/null -i {source_path}'
+
+        cmd = subprocess.Popen(
+            ffmpeg_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True)
+        _, err = cmd.communicate()
+
+        if cmd.returncode != 0:
+            self.logger.error(
+                f'ffmpeg interlacing detection failed for {source_path}: {err}'
+            )
+            return
+
+        for line in cmd.stdout:
+            if 'Multi frame detection:' in line:
+                try:
+                    response = InterlaceDetect.from_string(line)
+                except ValueError:
+                    self.logger.error(
+                        f'Unable to parse interlace ffmpeg interlace detection log: {line}')
+                    continue
+
+        return response
+
     def convert_file(self, source_path: str, destination_path: str) -> bool:
-        ffmpeg_cmd = f'ffmpeg -y -i "{source_path}" -c:v libx264 -c:a aac -strict experimental -ac 2 -crf 20 "{destination_path}"'
+        filters = '-c:v libx264 -c:a aac -strict experimental -ac 2 -crf 20'
+
+        interlace = self.check_interlaced(source_path=source_path)
+        if interlace is not None:
+            filters += ' -vf yadif=1'
+
+        ffmpeg_cmd = f'ffmpeg -y -i "{source_path}" {filters} "{destination_path}"'
 
         self.logger.info(
             f'Converting {source_path} -> {destination_path} with ffmpeg command: {ffmpeg_cmd}')
