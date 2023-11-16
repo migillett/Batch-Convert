@@ -143,7 +143,7 @@ class BatchConverter:
 
         media_to_convert = self.generate_convert_list(file_types)
         if len(media_to_convert) == 0:
-            self.logger.error(
+            self.logger.info(
                 f'No files with extensions {file_types} detected in {self.source_directory}.')
             return
 
