@@ -5,7 +5,6 @@ import logging
 from time import sleep
 from datetime import datetime
 import schedule
-from dataclasses import fields
 
 from utils.data_structures import InterlaceDetect
 
