@@ -112,6 +112,61 @@ class BatchConverter:
                 f'Encode complete. Total processing time for file {source_path}: {datetime.now() - t1}')
             return True
 
+    def verify_conversion(self, source_file: str, compare_file: str) -> bool:
+        # Use ffmpeg's PSNR comparison tool to see if the files are the same
+
+        psnr_data = {}
+
+        compare_t1 = datetime.now()
+
+        self.logger.info(
+            f'Starting PSNR comparision for files - {source_file} : {compare_file}')
+        psnr_command = f'ffmpeg -i "{compare_file}" -i "{source_file}" -lavfi psnr -f null -'
+
+        cmd = subprocess.Popen(
+            psnr_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+
+        _, err = cmd.communicate()
+
+        if cmd.returncode != 0:
+            self.logger.error(
+                f'PSNR comparision failed: {cmd.returncode}: {err}')
+            return False
+
+        self.logger.info(
+            f'PSNR analysis complete. Total time: {datetime.now() - compare_t1}')
+
+        # Example: [Parsed_psnr_0 @ 0x55e32f648e00] PSNR y:41.416058 u:47.800012 v:47.850356 average:42.706931 min:36.826982 max:69.456630
+        for line in cmd.stdout:
+            if '[Parsed_psnr_0 ' in line:
+                data = line.split('] PSNR ')[-1]
+                # should return this: y:41.416058 u:47.800012 v:47.850356 average:42.706931 min:36.826982 max:69.456630
+
+                psnr_values = data.split(' ')
+                # ["y:41.416058", "u:47.800012", "v:47.850356", "average:42.706931", "min:36.826982", "max:69.456630"]
+                for pair in psnr_values:
+                    key, value = pair.split(':')
+                    # ["y", "41.416058"]
+                    
+                    try:
+                        psnr_data[key] = float(value)
+                        # psnr_data = {"y": 41.416058}
+                    except Exception as e:
+                        self.logger.error(
+                            f'{e} unable to convert {value} to float')
+
+                self.logger.info(f'PSNR data: {psnr_values}')
+
+                return psnr_values.get('max', 0.0) >= 60.0
+
+        self.logger.error(f'unable to find PSNR output in subprocess')
+        # default to false if unable to parse the logs
+        return False
+
     def move_export(self, file_path: str, move_to_directory: str) -> bool:
         new_path = path.join(
             move_to_directory, path.basename(file_path))
@@ -143,7 +198,7 @@ class BatchConverter:
 
         media_to_convert = self.generate_convert_list(file_types)
         if len(media_to_convert) == 0:
-            self.logger.error(
+            self.logger.info(
                 f'No files with extensions {file_types} detected in {self.source_directory}.')
             return
 
