@@ -13,7 +13,7 @@ class BatchConverter:
         self.export_directory = '/app/export'
 
         self.logger = logging.getLogger()
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.INFO)
 
         self.export_format = environ.get('EXPORT_FORMAT', 'mkv')
 
@@ -24,7 +24,7 @@ class BatchConverter:
         # Create a file handler to log to a file
         file_handler = logging.FileHandler(
             path.join(self.source_directory, 'convert_jobs.log'))
-        file_handler.setLevel(logging.DEBUG)
+        file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
 
